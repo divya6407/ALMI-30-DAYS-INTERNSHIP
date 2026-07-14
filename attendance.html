@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f7fa;
+      padding: 30px;
+      background-image: url("https://static.vecteezy.com/system/resources/previews/005/281/253/non_2x/school-classroom-flat-color-illustration-vector.jpg");
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input {
+      padding: 10px;
+      margin: 10px;
+      width: 80%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+    .eligible { color: green; font-weight: bold; }
+    .not-eligible { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Attendance Calculator</h1>
+  <div class="box">
+    <input type="number" id="total" placeholder="Enter Total Classes"><br>
+    <input type="number" id="attended" placeholder="Enter Attended Classes"><br>
+    <button onclick="calculate()">Calculate</button>
+    <div class="result" id="output"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      let total = parseInt(document.getElementById("total").value);
+      let attended = parseInt(document.getElementById("attended").value);
+      let target = 75; // Minimum attendance %
+
+      if (isNaN(total) || isNaN(attended) || total <= 0 || attended < 0 || attended > total) {
+        document.getElementById("output").innerHTML = "<span style='color:red;'>⚠ Please enter valid numbers.</span>";
+        return;
+      }
+
+      // Current percentage
+      let percentage = (attended / total) * 100;
+
+      // Eligibility check
+      let status = percentage >= target ? 
+        `<span class="eligible">✔ Eligible (Above ${target}%)</span>` : 
+        `<span class="not-eligible">❌ Not Eligible (Below ${target}%)</span>`;
+
+      // Extra classes needed (if not eligible)
+      let extraClasses = 0, increaseNeeded = 0;
+      if (percentage < target) {
+        extraClasses = Math.ceil(((target/100 * total) - attended) / (1 - target/100));
+        increaseNeeded = (target - percentage).toFixed(2);
+      }
+
+      // Final output
+      let result = `
+        📊 Current Attendance: <b>${percentage.toFixed(2)}%</b><br>
+        ${status}
+      `;
+
+      if (percentage < target) {
+        result += `<br>📌 Extra Classes Needed: <b>${extraClasses}</b>
+                   <br>📈 Percentage Increase Needed: <b>${increaseNeeded}%</b>`;
+      }
+
+      document.getElementById("output").innerHTML = result;
+    }
+  </script>
+</body>
+</html>
